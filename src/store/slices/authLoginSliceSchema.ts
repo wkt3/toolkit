@@ -10,9 +10,7 @@ export const authLoginSliceSchema = z.object({
     message: "Password Required!",
   }),
   code: z.optional(z.string()),
-  agreeToTerms: z.literal(true, {
-    errorMap: () => ({ message: "You must agree to the terms" }),
-  }),
+
 });
 
 export type AuthData = z.infer<typeof authLoginSliceSchema>;
@@ -30,7 +28,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     email: "",
     password: "",
     code: "",
-    agreeToTerms: true
   },
   errors: {},
   loading: false,

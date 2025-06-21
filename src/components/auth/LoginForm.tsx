@@ -2,7 +2,7 @@
 import * as z from "zod";
 import React, { useState } from "react";
 import CardWrapper from "./CardWrapper";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -23,8 +23,6 @@ import Link from "next/link";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { authLoginSliceSchema } from "@/store/slices/authLoginSliceSchema";
 import { useDebounce } from "@/hooks/useDebounce";
-import { Checkbox } from "../ui/checkbox";
-import AgreementAndLinks from "./Agrement";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -168,20 +166,6 @@ const LoginForm = () => {
                       >
                         <Link href="/forgotpassword">Forgot Password</Link>
                       </Button>
-                      {/* <Controller
-                        name="agreeToTerms"
-                        control={form.control}
-                        render={({ field }) => (
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            onBlur={field.onBlur}
-                            name={field.name}
-                            ref={field.ref}
-                            disabled={isPending}
-                          />
-                        )}
-                      /> */}
                       <FormMessage />
                     </FormItem>
                   )}
@@ -193,7 +177,6 @@ const LoginForm = () => {
           {/* here this error is callback and defined to display */}
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
-          <AgreementAndLinks />
           <Button disabled={isPending} type="submit" className="w-full">
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>

@@ -6,7 +6,6 @@ import { getUserByEmail } from "./data/user";
 import bcrypt from "bcryptjs";
 import { authLoginSliceSchema } from "./store/slices/authLoginSliceSchema";
 
-
 export default {
   providers: [
     GitHub,
