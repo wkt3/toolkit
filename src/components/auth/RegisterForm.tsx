@@ -20,6 +20,8 @@ import { register } from "@/actionserver/register";
 import { useTransition } from "react";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { authRegisterSliceSchema } from "@/store/slices/authRegisterSliceSchema";
+import { useDebounce } from "@/hooks/useDebounce";
+import Link from "next/link";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,10 +36,28 @@ const RegisterForm = () => {
       password: "",
     },
   });
+
+  //watch fields
+  const name = form.watch("name");
+  const email = form.watch("email");
+  const password = form.watch("password");
+  const debouncedName = useDebounce(name, 1000);
+  const debouncedEmail = useDebounce(email, 1000);
+  const debouncedPassword = useDebounce(password, 1000);
+
   const onSubmit = (values: z.infer<typeof authRegisterSliceSchema>) => {
     setError("");
     setSuccess("");
+    // here these values comes from sever action/login
+    //have to start transition for smooth ui and experience
+
     startTransition(() => {
+      //you can send debounced fields here
+      console.log("Submitting with debounce: ", {
+        name: debouncedName,
+        email: debouncedEmail,
+        password: debouncedPassword,
+      });
       register(values).then((data) => {
         setError(data.error);
         setSuccess(data.success);
@@ -46,7 +66,7 @@ const RegisterForm = () => {
   };
   return (
     <CardWrapper
-      headerLabel="Create An Account"
+      headerLabel="Create An Account 👽"
       backButtonLabel="Already have an Account?"
       backButtonHref="/signin"
       showSocial
@@ -126,6 +146,18 @@ const RegisterForm = () => {
           </Button>
         </form>
       </Form>
+      <p className="text-xs mt-2">
+        By creating an account you agree to the{" "}
+        <Link className="font-bold underline" href="/terms">
+          Terms of Service
+        </Link>{" "}
+        and our
+        <Link className="font-bold underline" href="/privacy">
+          Privacy Policy
+        </Link>{" "}
+        . We'll occasionally send you emails about news, products, and services;
+        you can opt-out anytime.
+      </p>
     </CardWrapper>
   );
 };

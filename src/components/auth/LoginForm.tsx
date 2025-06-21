@@ -22,7 +22,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { authLoginSliceSchema } from "@/store/slices/authLoginSliceSchema";
-
+import { useDebounce } from "@/hooks/useDebounce";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,19 +37,33 @@ const LoginForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof authLoginSliceSchema>>({
     resolver: zodResolver(authLoginSliceSchema),
     defaultValues: {
       email: "",
       password: "",
-      code:"",
+      code: "",
     },
   });
+
+  //watch fields
+  const email = form.watch("email");
+  const password = form.watch("password");
+  const debouncedEmail = useDebounce(email, 1000);
+  const debouncedPassword = useDebounce(password, 1000);
+
   const onSubmit = (values: z.infer<typeof authLoginSliceSchema>) => {
     setError("");
     setSuccess("");
-
+    // here these values comes from sever action/login
+    //have to start transition for smooth ui and experience
     startTransition(() => {
+      //you can send debounced fields here
+      console.log("Submitting with debounce: ", {
+        email: debouncedEmail,
+        password: debouncedPassword,
+      });
       login(values)
         .then((data) => {
           if (data?.error) {
@@ -66,7 +80,7 @@ const LoginForm = () => {
           }
         })
         .catch(() => {
-          setError("Something went Wrong!!");
+          setError("Something went Wrong!!❌❌❌");
         });
     });
   };
@@ -168,6 +182,18 @@ const LoginForm = () => {
           </Button>
         </form>
       </Form>
+      <p className="text-xs mt-2">
+        By creating an account you agree to the{" "}
+        <Link className="font-bold underline" href="/terms">
+          Terms of Service
+        </Link>{" "}
+        and our
+        <Link className="font-bold underline" href="/privacy">
+          Privacy Policy
+        </Link>{" "}
+        . We'll occasionally send you emails about news, products, and services;
+        you can opt-out anytime.
+      </p>
     </CardWrapper>
   );
 };

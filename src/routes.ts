@@ -8,6 +8,8 @@ export const publicRoutes = [
   "/main",
   "/dashboard",
   "/error",
+  "/terms",
+  "/privacy",
 ];
 
 /**
