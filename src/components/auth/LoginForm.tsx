@@ -2,7 +2,7 @@
 import * as z from "zod";
 import React, { useState } from "react";
 import CardWrapper from "./CardWrapper";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -23,6 +23,8 @@ import Link from "next/link";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { authLoginSliceSchema } from "@/store/slices/authLoginSliceSchema";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Checkbox } from "../ui/checkbox";
+import AgreementAndLinks from "./Agrement";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -159,13 +161,27 @@ const LoginForm = () => {
                         </div>
                       </FormControl>
                       <Button
-                        className="px-0 font-normal"
+                        className="px-0 font-normal "
                         size="sm"
                         variant="link"
                         asChild
                       >
                         <Link href="/forgotpassword">Forgot Password</Link>
                       </Button>
+                      {/* <Controller
+                        name="agreeToTerms"
+                        control={form.control}
+                        render={({ field }) => (
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            onBlur={field.onBlur}
+                            name={field.name}
+                            ref={field.ref}
+                            disabled={isPending}
+                          />
+                        )}
+                      /> */}
                       <FormMessage />
                     </FormItem>
                   )}
@@ -177,6 +193,7 @@ const LoginForm = () => {
           {/* here this error is callback and defined to display */}
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
+          <AgreementAndLinks />
           <Button disabled={isPending} type="submit" className="w-full">
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>
@@ -191,8 +208,8 @@ const LoginForm = () => {
         <Link className="font-bold underline" href="/privacy">
           Privacy Policy
         </Link>{" "}
-        . We'll occasionally send you emails about news, products, and services;
-        you can opt-out anytime.
+        . We&apos;ll occasionally send you emails about news, products, and
+        services; you can opt-out anytime.
       </p>
     </CardWrapper>
   );

@@ -14,7 +14,7 @@ export const authRegisterSliceSchema = z.object({
     .max(25, {
       message: "Maximum 25 characters allowed for name",
     }),
-    password: z
+  password: z
     .string()
     .min(8, { message: "Must have at least 8 character eg:= Capital3*" })
     .regex(
@@ -26,6 +26,9 @@ export const authRegisterSliceSchema = z.object({
           "Minimum 8 Characters Required(1.lowerCase, 1.UpperCase, 1.Number, 1.Special-Character) for eg:- John_123*#",
       }
     ),
+  agreeToTerms: z.literal(true, {
+    errorMap: () => ({ message: "You must agree to the terms" }),
+  }),
 });
 
 export type AuthData = z.infer<typeof authRegisterSliceSchema>;
@@ -42,7 +45,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   formData: {
     email: "",
     password: "",
-    name: ""
+    name: "",
+    agreeToTerms: true
   },
   errors: {},
   loading: false,

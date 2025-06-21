@@ -2,7 +2,7 @@
 import * as z from "zod";
 import React, { useState } from "react";
 import CardWrapper from "./CardWrapper";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -22,6 +22,8 @@ import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { authRegisterSliceSchema } from "@/store/slices/authRegisterSliceSchema";
 import { useDebounce } from "@/hooks/useDebounce";
 import Link from "next/link";
+import { Checkbox } from "../ui/checkbox";
+import AgreementAndLinks from "./Agrement";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -134,6 +136,20 @@ const RegisterForm = () => {
                       </button>
                     </div>
                   </FormControl>
+                  {/* <Controller
+                    name="agreeToTerms"
+                    control={form.control}
+                    render={({ field }) => (
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                        disabled={isPending}
+                      />
+                    )}
+                  /> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -141,6 +157,7 @@ const RegisterForm = () => {
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
+          <AgreementAndLinks/>
           <Button disabled={isPending} type="submit" className="w-full">
             Create Account
           </Button>
@@ -155,8 +172,8 @@ const RegisterForm = () => {
         <Link className="font-bold underline" href="/privacy">
           Privacy Policy
         </Link>{" "}
-        . We'll occasionally send you emails about news, products, and services;
-        you can opt-out anytime.
+        . We&apos;ll occasionally send you emails about news, products, and
+        services; you can opt-out anytime.
       </p>
     </CardWrapper>
   );
