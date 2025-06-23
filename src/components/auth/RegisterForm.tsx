@@ -2,7 +2,7 @@
 import * as z from "zod";
 import React, { useState } from "react";
 import CardWrapper from "./CardWrapper";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -22,6 +22,9 @@ import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { authRegisterSliceSchema } from "@/store/slices/authRegisterSliceSchema";
 import { useDebounce } from "@/hooks/useDebounce";
 import Link from "next/link";
+import { Label } from "../ui/label";
+import { Checkbox } from "../ui/checkbox";
+import Image from "next/image";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,6 +37,8 @@ const RegisterForm = () => {
       name: "",
       email: "",
       password: "",
+      agree: true,
+      confirm:"",
     },
   });
 
@@ -71,6 +76,24 @@ const RegisterForm = () => {
       backButtonHref="/signin"
       showSocial
     >
+      <div className="flex flex-col items-center justify-center w-full">
+      <p className="text-sm text-muted-foreground">
+        Create your account to start betting
+      </p>
+      <p className="text-xs mt-1 font-medium text-orange-600 uppercase tracking-wide">
+        Play. Predict. Win.
+      </p>
+      {/* 🔗 Links */}
+      <div className="flex justify-center gap-4 text-sm">
+        <Link href="/games" className="text-blue-600 underline">
+          Explore Games
+        </Link>
+        <Link href="/how-to-play" className="text-blue-600 underline">
+          How to Play
+        </Link>
+      </div>
+      </div>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
@@ -139,6 +162,28 @@ const RegisterForm = () => {
               )}
             />
           </div>
+          <Controller
+            control={form.control}
+            name="agree"
+            defaultValue={true}
+            render={({ field }) => (
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="agree"
+                  checked={field.value}
+                  onCheckedChange={(checked) =>
+                    field.onChange(Boolean(checked))
+                  }
+                />
+                <Label htmlFor="agree">
+                  I agree to the{" "}
+                  <Link href="/terms" className="underline text-blue-600">
+                    Terms & Conditions
+                  </Link>
+                </Label>
+              </div>
+            )}
+          />
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button disabled={isPending} type="submit" className="w-full">

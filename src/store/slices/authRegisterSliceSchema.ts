@@ -23,14 +23,16 @@ export const authRegisterSliceSchema = z.object({
       ),
       {
         message:
-          "Minimum 8 Characters Required(1.lowerCase, 1.UpperCase, 1.Number, 1.Special-Character) for eg:- John_123*#",
+        "Minimum 8 Characters Required(1.lowerCase, 1.UpperCase, 1.Number, 1.Special-Character) for eg:- John_123*#",
       }
     ),
-
+  confirm: z.string(),
+  agree: z.literal(true, {
+    errorMap: () => ({ message: "You must accept the Terms" }),
+  })
 });
 
 export type AuthData = z.infer<typeof authRegisterSliceSchema>;
-
 interface AuthState{
   formData: AuthData;
   errors: Record<string, string[]>
@@ -44,6 +46,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     email: "",
     password: "",
     name: "",
+    agree: true,
+    confirm: ""
   },
   errors: {},
   loading: false,
