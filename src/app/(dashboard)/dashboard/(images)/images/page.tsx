@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 // Dynamically import components that use browser APIs
 const ImageEditor = dynamic(() => import("@/components/images/image-editor"), {
   ssr: false,
-  loading: () => <div className="p-4 text-center">Loading WebGL editor...</div>,
+  loading: () => <div className="p-4 text-center">Loading Wkt3 editor...</div>,
 })
 
 const ScriptLoader = dynamic(() => import("@/components/images/script-loader"), { ssr: false })
@@ -40,13 +40,13 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center p-4 md:p-8 bg-gray-900 text-white">
       <div className="w-full max-w-5xl">
         <div className="text-center mb-8">
-          <Link href="/"><h1 className="text-4xl font-bold mb-2">Image Editor</h1></Link>
+          <Link href="/"><h1 className="text-4xl font-bold mb-2">Wkt3 Editor</h1></Link>
           <p className="text-lg text-gray-300">Edit your images with filters and effects</p>
         </div>
 
         <Card className="bg-gray-200 text-gray-900">
           <CardHeader>
-           <CardTitle className="text-center">Image Editor</CardTitle>
+           <CardTitle className="text-center">Wkt3 Editor</CardTitle>
           </CardHeader>
           <CardContent>
             {!imageUrl ? (
@@ -59,7 +59,7 @@ export default function Home() {
               <div className="space-y-4">
                 <Tabs defaultValue="standard" className="w-full">
                   <TabsList className="grid w-full grid-cols-1">
-                    <TabsTrigger value="standard">Standard Editor</TabsTrigger>
+                    <TabsTrigger value="standard">Wkt3 Editor</TabsTrigger>
                     {/* <TabsTrigger value="webgl">WebGL Editor</TabsTrigger> */}
                   </TabsList>
                   <TabsContent value="standard">
@@ -72,7 +72,7 @@ export default function Home() {
                       </div>
                     </div>
                   </TabsContent>
-                  {/* <TabsContent value="webgl">
+                   <TabsContent value="webgl">
                     <ScriptLoader fallback={<FallbackEditor imageUrl={imageUrl} />}>
                       <div className="relative">
                         <ImageEditor imageUrl={imageUrl} />
@@ -83,12 +83,11 @@ export default function Home() {
                         </div>
                       </div>
                     </ScriptLoader>
-                  </TabsContent> */}
+                  </TabsContent>
                 </Tabs>
-
                 <div className="p-4 bg-yellow-100 rounded-lg text-yellow-800">
                   <p className="text-sm">
-                    <strong>Tip:</strong>use the Standard
+                    <strong>Tip:</strong>use the Wkt3
                     Editor which has better compatibility across browsers.
                   </p>
                 </div>
@@ -98,9 +97,8 @@ export default function Home() {
         </Card>
       </div>
       <footer className="mt-8 text-center text-gray-500">
-        Created for <Link href="http://jsdev.space">cricketON </Link>
+        Created for <Link href="http://www.wkt3.com">Wkt3 Editor </Link>
         </footer>
     </main>
   )
 }
-

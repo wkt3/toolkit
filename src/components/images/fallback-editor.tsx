@@ -13,7 +13,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 
-export default function FallbackEditor({ imageUrl }) {
+export default function FallbackEditor({ imageUrl }:{imageUrl:string}) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [brightness, setBrightness] = useState(100);
 	const [contrast, setContrast] = useState(100);

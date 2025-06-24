@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import html2canvas from "html2canvas";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -63,15 +64,14 @@ const filterConfigs = {
   },
 };
 
-export default function ImageEditor({ imageUrl }) {
+export default function ImageEditor({ imageUrl }: { imageUrl: string }) {
   const [selectedFilter, setSelectedFilter] =
     useState<FilterType>("brightness");
-  const [filterParams, setFilterParams] = useState<any>({});
+  const [filterParams, setFilterParams] = useState<{ [key: string]: number }>(
+    {}
+  );
   const [texture, setTexture] = useState<any>(null);
   const [canvas, setCanvas] = useState<any>(null);
-  const [originalImage, setOriginalImage] = useState<HTMLImageElement | null>(
-    null
-  );
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -80,7 +80,7 @@ export default function ImageEditor({ imageUrl }) {
 
   // Initialize filter params when filter changes
   useEffect(() => {
-    const initialParams = {};
+    const initialParams: { [key: string]: number } = {};
     Object.entries(filterConfigs[selectedFilter].params).forEach(
       ([key, param]) => {
         initialParams[key] = param.default;
@@ -97,8 +97,6 @@ export default function ImageEditor({ imageUrl }) {
     img.crossOrigin = "anonymous";
 
     img.onload = () => {
-      setOriginalImage(img);
-
       if (!window.fx) return;
 
       try {
@@ -118,7 +116,8 @@ export default function ImageEditor({ imageUrl }) {
             glfxCanvas,
             canvasRef.current
           );
-          canvasRef.current = glfxCanvas;
+          // canvasRef.current = glfxCanvas; // Removed: cannot assign to read-only property
+          // Optionally, you can keep track of the current canvas in a separate ref if needed
         }
 
         glfxCanvas.draw(glfxTexture).update();
@@ -183,8 +182,12 @@ export default function ImageEditor({ imageUrl }) {
 
     try {
       // Use html2canvas to capture what's visible on screen
+      const canvasContainer = editorRef.current.querySelector(".canvas-container");
+      if (!canvasContainer) {
+        throw new Error("Canvas container not found");
+      }
       const screenshotCanvas = await html2canvas(
-        editorRef.current.querySelector(".canvas-container"),
+        canvasContainer as HTMLElement,
         {
           useCORS: true,
           backgroundColor: null,
@@ -212,7 +215,7 @@ export default function ImageEditor({ imageUrl }) {
           <canvas ref={canvasRef} className="h-auto max-w-full" />
         </div>
         <div className="mt-2 flex justify-between">
-          <div className="text-gray-500 text-xs">WebGL Editor</div>
+          <div className="text-gray-500 text-xs">WKT3 Editor</div>
           <Button variant="outline" size="sm" onClick={handleSaveImage}>
             Save Image
           </Button>
@@ -269,7 +272,7 @@ export default function ImageEditor({ imageUrl }) {
             variant="outline"
             className="mt-4 w-full"
             onClick={() => {
-              const initialParams = {};
+              const initialParams: { [key: string]: number } = {};
               Object.entries(filterConfigs[selectedFilter].params).forEach(
                 ([key, param]) => {
                   initialParams[key] = param.default;

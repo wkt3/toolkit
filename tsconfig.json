@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,9 +18,7 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "target": "ES2017"
   },
@@ -32,9 +26,10 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "src/app/(images)/photo/page.jsx", "src/components/messenger/InputImage.jsx", "src/app/(messenger)/conversations/[conversationId]/_components/Form.tsx"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    ".next/types/**/*.ts",
+    "src/app/(dashboard)/dashboard/(images)/photo/page.jsx",
+    "src/components/messenger/InputImage.jsx",
+    "src/app/(messenger)/conversations/[conversationId]/_components/Form.tsx"
+  ],
+  "exclude": ["node_modules"]
 }
