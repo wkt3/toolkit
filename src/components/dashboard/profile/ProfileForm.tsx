@@ -46,7 +46,7 @@ const SettingsPage = () => {
     defaultValues: {
       name: user?.name || undefined,
       email: user?.email || undefined,
-      password: "",
+      password: undefined,
       newPassword: "",
       role: user?.role || undefined,
       isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
@@ -124,7 +124,7 @@ const SettingsPage = () => {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel>Old-Password</FormLabel>
                           <FormControl>
                             <div className="flex items-center border rounded px-3 py-2">
                               <Input
@@ -157,7 +157,7 @@ const SettingsPage = () => {
                       name="newPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel>New-Password</FormLabel>
                           <FormControl>
                             <div className="flex items-center border rounded px-3 py-2">
                               <Input

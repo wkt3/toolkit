@@ -47,7 +47,7 @@ export const SettingsSchema = z
   );
 
 export const NewPasswordSchema = z.object({
-  password: z
+  newPassword: z
     .string()
     .min(8, { message: "Must have at least 1 character" })
     .regex(

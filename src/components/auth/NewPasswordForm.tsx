@@ -32,7 +32,7 @@ const NewPasswordForm = () => {
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
-      password: "",
+      newPassword: "",
     },
   });
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
@@ -59,7 +59,7 @@ const NewPasswordForm = () => {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="password"
+              name="newPassword"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>

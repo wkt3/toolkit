@@ -22,7 +22,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   if (user.isOAuth) {
     values.email = undefined;
     values.password = undefined;
-    values.newPassword =undefined;
+    values.newPassword ="";
     values.isTwoFactorEnabled = undefined;
   }
   //if user wants to update email with its another email that registered with us with some 
@@ -51,7 +51,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
     const hashedPassword = await bcrypt.hash(values.newPassword, 10);
     values.password = hashedPassword;
-    values.newPassword = undefined;
+    values.newPassword = "";
   }
   await db.user.update({
     where: { id: dbUser.id },

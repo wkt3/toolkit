@@ -19,7 +19,7 @@ export const newPassword = async (
     return { error: "Invalid Fields!!" };
   }
 
-  const { password } = validatedFields.data;
+  const { newPassword } = validatedFields.data;
 
   const existingToken = await getPasswordResetTokenByToken(token);
   if (!existingToken) {
@@ -35,7 +35,7 @@ export const newPassword = async (
     return { error: "Email does not Exits" };
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   await db.user.update({
     where: { id: existingUser.id },

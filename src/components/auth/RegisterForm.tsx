@@ -24,7 +24,6 @@ import { useDebounce } from "@/hooks/useDebounce";
 import Link from "next/link";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
-import Image from "next/image";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,8 +36,8 @@ const RegisterForm = () => {
       name: "",
       email: "",
       password: "",
-      agree: true,
-      confirm:"",
+      confirm: "",
+      agree: true || undefined,
     },
   });
 
@@ -77,21 +76,18 @@ const RegisterForm = () => {
       showSocial
     >
       <div className="flex flex-col items-center justify-center w-full">
-      <p className="text-sm text-muted-foreground">
-        Create your account to start betting
-      </p>
-      <p className="text-xs mt-1 font-medium text-orange-600 uppercase tracking-wide">
-        Play. Predict. Win.
-      </p>
-      {/* 🔗 Links */}
-      <div className="flex justify-center gap-4 text-sm">
-        <Link href="/games" className="text-blue-600 underline">
-          Explore Games
-        </Link>
-        <Link href="/how-to-play" className="text-blue-600 underline">
-          How to Play
-        </Link>
-      </div>
+        <p className="text-xs mt-1 font-medium text-orange-600 uppercase tracking-wide">
+          Play. Predict. Win.
+        </p>
+        {/* 🔗 Links */}
+        <div className="flex justify-center gap-4 text-sm">
+          <Link href="/games" className="text-blue-600 underline">
+            Explore Games
+          </Link>
+          <Link href="/how-to-play" className="text-blue-600 underline">
+            How to Play
+          </Link>
+        </div>
       </div>
 
       <Form {...form}>
@@ -165,7 +161,7 @@ const RegisterForm = () => {
           <Controller
             control={form.control}
             name="agree"
-            defaultValue={true}
+            defaultValue={undefined}
             render={({ field }) => (
               <div className="flex items-start space-x-2">
                 <Checkbox
