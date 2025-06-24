@@ -37,7 +37,7 @@ const RegisterForm = () => {
       email: "",
       password: "",
       confirm: "",
-      agree: true || undefined,
+      agree:false||true,
     },
   });
 

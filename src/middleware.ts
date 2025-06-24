@@ -54,5 +54,7 @@ export const config = {
      */
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
     "/users/:path*",
+    "/dashboard/:path*",
+    "/superadmin/:path*"
   ],
 };

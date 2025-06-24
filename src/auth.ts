@@ -21,6 +21,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   callbacks: {
+    authorized: ({ auth }) => auth?.user?.role === "SUPERADMIN",
     async signIn({ user, account }) {
       //  Allow OAuth without email verification
       if (account?.provider !== "credentials") return true;
@@ -77,3 +78,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   ...authConfig,
 });
+export type { AdapterUser } from "./next-auth.d";

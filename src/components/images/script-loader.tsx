@@ -34,7 +34,7 @@ export default function ScriptLoader({ children, fallback }) {
 		) : (
 			<div className='p-4 text-center'>
 				<p className='text-red-500'>
-					Failed to load WebGL editor. Please try the Standard Editor instead.
+					Failed to load Wkt3 editor. Please try the Standard Editor instead.
 				</p>
 			</div>
 		);
@@ -43,7 +43,7 @@ export default function ScriptLoader({ children, fallback }) {
 	if (glfxStatus === 'loading' || !html2canvasLoaded) {
 		return (
 			<div className='p-4 text-center'>
-				<p>Loading WebGL editor...</p>
+				<p>Loading wkt3 editor...</p>
 			</div>
 		);
 	}

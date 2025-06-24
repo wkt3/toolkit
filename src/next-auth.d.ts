@@ -1,6 +1,6 @@
 import { type DefaultSession } from "next-auth";
 
-export type ExtendedUser = DefaultSession["user"] & {
+export type AdapterUser = DefaultSession["user"] & {
   role: "ADMIN" | "USER";
   id: string | undefined;
   isTwoFactorEnabled: boolean;
@@ -9,7 +9,7 @@ export type ExtendedUser = DefaultSession["user"] & {
 
 declare module "next-auth" {
   interface Session {
-    user: ExtendedUser &
+    user: AdapterUser &
       User & {
         role: "ADMIN" | "USER";
         id: string | undefined;

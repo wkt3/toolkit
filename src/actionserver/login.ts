@@ -16,6 +16,7 @@ import { authLoginSliceSchema } from './../store/slices/authLoginSliceSchema';
 import { db } from "@/lib/db";
 import { getTwoFactorConfirmationByUserId } from "@/data/twoFactorConfirmation";
 import { getTwoFactorTokenByEmail } from "@/data/twoFactorToken";
+import bcrypt from "bcryptjs";
 
 export const login = async (values: z.infer<typeof authLoginSliceSchema>) => {
   const validatedFields = authLoginSliceSchema.safeParse(values);
@@ -30,6 +31,9 @@ export const login = async (values: z.infer<typeof authLoginSliceSchema>) => {
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "Email Does Not Exsits" };
   }
+  const isPasswordValid = await bcrypt.compare(password, existingUser?.password);
+  if (!isPasswordValid) return {error:"Invalid Password"} // ⛔ Stop here if password is wrong
+
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(
       existingUser.email
@@ -43,6 +47,7 @@ export const login = async (values: z.infer<typeof authLoginSliceSchema>) => {
     );
     return { success: "Re-Confirmation Email Sent!!" };
   }
+
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
     if (code) {
       //TODO:VERIFY CODE
@@ -92,12 +97,17 @@ export const login = async (values: z.infer<typeof authLoginSliceSchema>) => {
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
+    // Type guard to check if error has a 'code' property
+    function hasCodeProperty(err: unknown): err is { code: string } {
+      return typeof err === "object" && err !== null && "code" in err && typeof (err as any).code === "string";
+    }
+
+    if (error instanceof AuthError && hasCodeProperty(error)) {
+      switch (error.code) {
         case "CredentialsSignin":
           return { error: "Invalid Credentails" };
         default:
-          return { error: "Something Went Wrong!!" };
+          return { error: "Provide latest Reset Password 🧾🧾🧾!!" };
       }
     }
     throw error;
