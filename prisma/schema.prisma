@@ -30,9 +30,11 @@ model User{
   accounts Account[]
   sessions      Session[]
   messages Message[] @relation("UserMessages")
+  receivedMessages Message[] @relation("MessageRecipient")
   online Boolean @default(false)
   lastSeen DateTime @default(now())
   chatRoomMembers ChatRoomMember[]
+  groups UserGroup[]
 }
 
 model File{
@@ -93,8 +95,31 @@ model Message{
    sender    User     @relation("UserMessages", fields: [senderId], references: [id])
   roomId    String   @db.ObjectId
   room      ChatRoom @relation("RoomMessages", fields: [roomId], references: [id])
- 
+  fileUrl    String?
+  group      Group?   @relation(fields: [groupId], references: [id])
+  groupId    String?  @db.ObjectId
+  recipient  User?    @relation("MessageRecipient", fields: [recipientId], references: [id])
+  recipientId String?  @db.ObjectId 
+  type       MessageType
 }
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  FILE
+}
+
+model Group {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name    String
+  users   UserGroup[]
+  messages Message[]
+  adminId String
+}
+
 
 model ChatRoom {
   id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -145,8 +170,6 @@ model TwoFactorConfirmation{
 }
 
 
-
-
 type Address{
   city String
   country String
@@ -175,5 +198,16 @@ model ChatRoomMember {
   chatRoom  ChatRoom @relation(fields: [chatRoomId], references: [id])
 
   @@unique([userId, chatRoomId])
+}
+
+model UserGroup {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  groupId String @db.ObjectId
+
+  user    User   @relation(fields: [userId], references: [id])
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId])
 }
 

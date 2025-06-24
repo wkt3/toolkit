@@ -70,8 +70,12 @@ export default function ImageEditor({ imageUrl }: { imageUrl: string }) {
   const [filterParams, setFilterParams] = useState<{ [key: string]: number }>(
     {}
   );
-  const [texture, setTexture] = useState<any>(null);
-  const [canvas, setCanvas] = useState<any>(null);
+  const [texture, setTexture] = useState<{ [key: string]: number }>(
+    {}
+  );
+  const [canvas, setCanvas] = useState<{ [key: string]: number }>(
+    {}
+  );
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -211,11 +215,11 @@ export default function ImageEditor({ imageUrl }: { imageUrl: string }) {
   return (
     <div className="flex flex-col gap-4 md:flex-row" ref={editorRef}>
       <div className="flex-1" ref={containerRef}>
-        <div className="canvas-container overflow-hidden rounded-lg bg-black">
+        <div className="canvas-container overflow-hidden rounded-lg">
           <canvas ref={canvasRef} className="h-auto max-w-full" />
         </div>
         <div className="mt-2 flex justify-between">
-          <div className="text-gray-500 text-xs">WKT3 Editor</div>
+          <div className=" text-xs">WKT3 Editor</div>
           <Button variant="outline" size="sm" onClick={handleSaveImage}>
             Save Image
           </Button>
