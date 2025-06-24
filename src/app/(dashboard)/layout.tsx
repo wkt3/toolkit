@@ -4,6 +4,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import React from "react";
 import { cookies } from "next/headers";
 import getCurrentUser from "@/actionserver/getCurrentUser";
+import { SessionProvider } from "next-auth/react";
+
 
 
 export default async function AuthLayout({
@@ -16,14 +18,16 @@ export default async function AuthLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
   return (
-    <div className="flex">
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSideBar />
-        <main className="w-full">
-          <Navbar currentUser={currentUser}/>
-          <div className="px-4">{children}</div>
-        </main>
-      </SidebarProvider>
-    </div>
+    <SessionProvider>
+      <div className="flex">
+        <SidebarProvider defaultOpen={defaultOpen}>
+          <AppSideBar />
+          <main className="w-full">
+            <Navbar currentUser={currentUser} />
+            <div className="px-4">{children}</div>
+          </main>
+        </SidebarProvider>
+      </div>
+    </SessionProvider>
   );
 }
