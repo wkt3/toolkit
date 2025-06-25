@@ -32,7 +32,7 @@ export const login = async (values: z.infer<typeof authLoginSliceSchema>) => {
     return { error: "Email Does Not Exsits" };
   }
   const isPasswordValid = await bcrypt.compare(password, existingUser?.password);
-  if (!isPasswordValid) return {error:"Invalid Password"} // ⛔ Stop here if password is wrong
+  if (!isPasswordValid) return { error: "Invalid Password ⛔" }; // ⛔ Stop here if password is wrong
 
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(
@@ -94,8 +94,10 @@ export const login = async (values: z.infer<typeof authLoginSliceSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      // If you want to redirect after login, uncomment the line below
+      redirectTo: DEFAULT_LOGIN_REDIRECT||"/settings",
     });
+    return { success: "Login Successful" }; // Return success message if login is successful
   } catch (error) {
     // Type guard to check if error has a 'code' property
     function hasCodeProperty(err: unknown): err is { code: string } {

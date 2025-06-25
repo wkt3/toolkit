@@ -101,3 +101,19 @@ export const RegisterSchema = z.object({
         "Minimum 8 Characters Required(1.lowerCase, 1.UpperCase, 1.Number, 1.Special-Character) for eg:- John_123*#",
     }),
 });
+
+export const profileSchema = z.object({
+  name: z.string().min(3),
+  email: z.string().email(),
+});
+
+export const passwordSchema = z
+  .object({
+    currentPassword: z.string().min(6),
+    newPassword: z.string().min(6),
+    confirmNewPassword: z.string().min(6),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    path: ["confirmNewPassword"],
+    message: "Passwords do not match",
+  });

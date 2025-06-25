@@ -17,6 +17,14 @@ const nextConfig = {
         port: "",
         pathname: "**",
       },
+        // This makes /uploads publicly accessible
+   
+      {
+        protocol: "https",
+        hostname: "localhost",
+        port: "",
+        pathname: "/uploads/**",
+      },
     ],
   },
 };

@@ -36,8 +36,8 @@ const RegisterForm = () => {
       name: "",
       email: "",
       password: "",
-      confirm: "",
-      agree:false||true,
+      confirmPassword:"",
+      terms:true,
     },
   });
 
@@ -45,9 +45,11 @@ const RegisterForm = () => {
   const name = form.watch("name");
   const email = form.watch("email");
   const password = form.watch("password");
+  const confirmPassword=form.watch("confirmPassword")
   const debouncedName = useDebounce(name, 1000);
   const debouncedEmail = useDebounce(email, 1000);
   const debouncedPassword = useDebounce(password, 1000);
+  const debouncedConfirmPassword=useDebounce(confirmPassword,1000)
 
   const onSubmit = (values: z.infer<typeof authRegisterSliceSchema>) => {
     setError("");
@@ -61,6 +63,7 @@ const RegisterForm = () => {
         name: debouncedName,
         email: debouncedEmail,
         password: debouncedPassword,
+        confirmPassword:debouncedConfirmPassword,
       });
       register(values).then((data) => {
         setError(data.error);
@@ -157,21 +160,49 @@ const RegisterForm = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm-Password</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center border rounded px-3 py-2">
+                      <Input
+                        {...field}
+                        placeholder="******"
+                        disabled={isPending}
+                        type={showPassword ? "text" : "password"}
+                        className="flex-grow outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="ml-2 text-gray-600"
+                      >
+                        {showPassword ? <RiEyeFill /> : <RiEyeOffFill />}
+                      </button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <Controller
             control={form.control}
-            name="agree"
+            name="terms"
             defaultValue={undefined}
             render={({ field }) => (
               <div className="flex items-start space-x-2">
                 <Checkbox
-                  id="agree"
+                  id="terms"
                   checked={field.value}
                   onCheckedChange={(checked) =>
                     field.onChange(Boolean(checked))
                   }
                 />
-                <Label htmlFor="agree">
+                <Label htmlFor="terms">
                   I agree to the{" "}
                   <Link href="/terms" className="underline text-blue-600">
                     Terms & Conditions
