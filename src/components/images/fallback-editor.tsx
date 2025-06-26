@@ -106,14 +106,14 @@ export default function FallbackEditor({ imageUrl }:{imageUrl:string}) {
 	return (
 		<div className='flex flex-col md:flex-row gap-4'>
 			<div className='flex-1'>
-				<div className='bg-black rounded-lg overflow-hidden'>
+				<div className='rounded-lg overflow-hidden'>
 					<canvas
 						ref={canvasRef}
 						className='w-[100%] h-[100%]'
 					/>
 				</div>
-				<div className='flex justify-between mt-2'>
-					<div className='text-xs text-gray-500'>CricketON Editor</div>
+				<div className='flex text-black dark:text-white justify-between mt-2'>
+					<div className='text-xs '>Wkt3 Editor</div>
 					<Button
 						variant='outline'
 						size='sm'
@@ -123,7 +123,7 @@ export default function FallbackEditor({ imageUrl }:{imageUrl:string}) {
 				</div>
 			</div>
 
-			<Card className='w-full md:w-64 bg-gray-100'>
+			<Card className='w-full md:w-64 bg-gray-400'>
 				<div className='p-4'>
 					<div className='mb-4'>
 						<Label htmlFor='filter-select'>Filter Type:</Label>

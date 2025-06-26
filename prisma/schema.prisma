@@ -32,7 +32,17 @@ model User {
   favouriteIds          String[]               @db.ObjectId
 
   accounts Account[]
+<<<<<<< HEAD
   sessions Session[]
+=======
+  sessions      Session[]
+  messages Message[] @relation("UserMessages")
+  receivedMessages Message[] @relation("MessageRecipient")
+  online Boolean @default(false)
+  lastSeen DateTime @default(now())
+  chatRoomMembers ChatRoomMember[]
+  groups UserGroup[]
+>>>>>>> 96018a2da1a7bb5cd46b0d3db81483116810d15a
 }
 
 model Account {
@@ -54,11 +64,66 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+<<<<<<< HEAD
 model VerificationToken {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   email      String
   token      String   @unique
   expires    DateTime
+=======
+
+
+model Message{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+   content   String
+  createdAt DateTime @default(now())
+  senderId  String   @db.ObjectId
+   sender    User     @relation("UserMessages", fields: [senderId], references: [id])
+  roomId    String   @db.ObjectId
+  room      ChatRoom @relation("RoomMessages", fields: [roomId], references: [id])
+  fileUrl    String?
+  group      Group?   @relation(fields: [groupId], references: [id])
+  groupId    String?  @db.ObjectId
+  recipient  User?    @relation("MessageRecipient", fields: [recipientId], references: [id])
+  recipientId String?  @db.ObjectId 
+  type       MessageType
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  FILE
+}
+
+model Group {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name    String
+  users   UserGroup[]
+  messages Message[]
+  adminId String
+}
+
+
+model ChatRoom {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  isGroup   Boolean    @default(false)
+  chatRoomMembers ChatRoomMember[]
+  messages  Message[] @relation("RoomMessages")
+  createdAt DateTime @default(now())
+}
+
+
+
+model VerificationToken{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  email String
+  token String @unique
+  expires DateTime
+>>>>>>> 96018a2da1a7bb5cd46b0d3db81483116810d15a
   identifier String?
 
   @@unique([email, token])
@@ -91,6 +156,19 @@ model TwoFactorConfirmation {
   @@unique([userId])
 }
 
+<<<<<<< HEAD
+=======
+
+type Address{
+  city String
+  country String
+  line1 String
+  line2 String?
+  postal_code String
+  state String
+}
+
+>>>>>>> 96018a2da1a7bb5cd46b0d3db81483116810d15a
 model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
@@ -100,3 +178,29 @@ model Session {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+<<<<<<< HEAD
+=======
+
+model ChatRoomMember {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  chatRoomId String  @db.ObjectId
+
+  user      User     @relation(fields: [userId], references: [id])
+  chatRoom  ChatRoom @relation(fields: [chatRoomId], references: [id])
+
+  @@unique([userId, chatRoomId])
+}
+
+model UserGroup {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  groupId String @db.ObjectId
+
+  user    User   @relation(fields: [userId], references: [id])
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId])
+}
+
+>>>>>>> 96018a2da1a7bb5cd46b0d3db81483116810d15a
