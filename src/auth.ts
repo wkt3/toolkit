@@ -19,6 +19,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         data: { emailVerified: new Date() },
       });
     },
+    async signOut(event) {
+      const token = "token" in event ? event.token : undefined;
+      if (token?.sub) {
+        await db.user.update({
+          where: { id: token.sub },
+          data: { online: false },
+        });
+      }
+    },
   },
   callbacks: {
     authorized: ({ auth }) => auth?.user?.role === "SUPERADMIN",
@@ -87,8 +96,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.email = token.email;
         session.user.isOAuth = token.isOAuth;
       }
+      if (token?.sub) {
+        await db.user.update({
+          where: { id: token.sub },
+          data: { online: true },
+        });
+      }
       return session;
     },
+
     async jwt({ token }) {
       if (!token.sub) return token;
 
