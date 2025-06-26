@@ -5,18 +5,26 @@ export type AdapterUser = DefaultSession["user"] & {
   id: string | undefined;
   isTwoFactorEnabled: boolean;
   isOAuth: boolean;
+  req: Request;
 };
 
 declare module "next-auth" {
   interface Session {
     user: AdapterUser &
       User & {
-        role: "ADMIN" | "USER" | "SUPERADMIN"| "GUEST" | "MANAGER" | "INCHARGE";
+        role:
+          | "ADMIN"
+          | "USER"
+          | "SUPERADMIN"
+          | "GUEST"
+          | "MANAGER"
+          | "INCHARGE";
         email: string | null;
         name: string | null;
         id: string | undefined;
         isTwoFactorEnabled: boolean;
         isOAuth: boolean;
+        req: Request;
       };
   }
 }

@@ -22,56 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     authorized: ({ auth }) => auth?.user?.role === "SUPERADMIN",
-    async signIn({ user, account, req }) {
-      // Allow signIn for superadmin
-      if (req.auth?.user?.role === "SUPERADMIN") return true;
-      const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-      // Dynamically import ua-parser-js to avoid top-level import error
-      const { default: UAParser } = await import("ua-parser-js");
-      const ua = UAParser(req.headers["user-agent"] || "").getResult();
-      // Log the sign-in attempt
-      await db.loginLog.create({
-        data: {
-          userId: user?.id || "",
-          ipAddress: ip as string,
-          os: ua.os.name || "",
-          browser: ua.browser.name || "",
-          device: ua.device.type || "",
-          status: "attempted",
-          timestamp: new Date(now()),
-          userAgentDetails: JSON.stringify({
-            os: ua.os.name || "",
-            browser: ua.browser.name || "",
-            device: ua.device.type || "",
-          }),
-        },
-      });
-      await db.user.update({
-        where: { id: user?.id as string },
-        data: { emailVerified: new Date(), online: true },
-      });
-      // Log the successful sign-in
-      await db.loginLog.create({
-        data: {
-          userId: user?.id || "",
-          ipAddress: ip as string,
-          os: ua.os.name || "",
-          browser: ua.browser.name || "",
-          device: ua.device.type || "",
-          status: "success",
-          timestamp: new Date(now()),
-          userAgentDetails: JSON.stringify({
-            os: ua.os.name || "",
-            browser: ua.browser.name || "",
-            device: ua.device.type || "",
-          }),
-        },
-      });
-
-      // If the user is signing in with OAuth, check if email verification is required
-      // and if the user has verified their email.
-      // If the user is signing in with credentials, allow sign-in without email verification.
-      // Note: This is a security measure to prevent unauthorized access.
+    async signIn({ user, account }) {
       //  Allow OAuth without email verification
       if (account?.provider !== "credentials") return true;
 
@@ -89,6 +40,36 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { id: twoFactorConfirmation.id },
         });
       }
+
+      // Ensure user.id is defined
+      if (!user.id) return false;
+
+      const ip = "unknown"; // Could be replaced with actual IP if available in context
+      const ua = "unknown"; // Could be replaced with actual UA if available in context
+
+      await db.loginLog.create({
+        data: {
+          userId: user.id,
+          ipAddress: ip,
+          userAgent: ua,
+          location: "Detect via IP API LATER",
+          browser: ua,
+          os: ua, // Detect via user-agent parser LATER
+          device: ua, // Detect via user-agent parser LATER,
+          loggedInAt: new Date(now()),
+          loggedOutAt: null,
+          action: "LOGIN",
+          status: "SUCCESS",
+          timestamp: new Date(now()),
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          browserVersion: ua, // Detect via user-agent parser LATER
+          createdAt: new Date(now()),
+        },
+      });
+      await db.user.update({
+        where: { id: user.id },
+        data: { online: true },
+      });
       return true;
     },
     async session({ token, session }) {
@@ -105,7 +86,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.isOAuth = token.isOAuth;
-        session.user.role = token.role;
       }
       return session;
     },
@@ -128,4 +108,3 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   ...authConfig,
 });
-export type { AdapterUser } from "./next-auth.d";
