@@ -10,7 +10,7 @@ export const publicRoutes = [
   "/error",
   "/terms",
   "/privacy",
-  "/authlogin",
+  "/superadmin",
 ];
 
 /**

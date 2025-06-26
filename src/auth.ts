@@ -5,7 +5,7 @@ import { getUserById } from "./data/user";
 import { getAccountByUserId } from "./data/account";
 import { getTwoFactorConfirmationByUserId } from "./data/twoFactorConfirmation";
 import authConfig from "./authConfig";
-
+import { now } from "lodash";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
@@ -22,7 +22,56 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     authorized: ({ auth }) => auth?.user?.role === "SUPERADMIN",
-    async signIn({ user, account }) {
+    async signIn({ user, account, req }) {
+      // Allow signIn for superadmin
+      if (req.auth?.user?.role === "SUPERADMIN") return true;
+      const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+      // Dynamically import ua-parser-js to avoid top-level import error
+      const { default: UAParser } = await import("ua-parser-js");
+      const ua = UAParser(req.headers["user-agent"] || "").getResult();
+      // Log the sign-in attempt
+      await db.loginLog.create({
+        data: {
+          userId: user?.id || "",
+          ipAddress: ip as string,
+          os: ua.os.name || "",
+          browser: ua.browser.name || "",
+          device: ua.device.type || "",
+          status: "attempted",
+          timestamp: new Date(now()),
+          userAgentDetails: JSON.stringify({
+            os: ua.os.name || "",
+            browser: ua.browser.name || "",
+            device: ua.device.type || "",
+          }),
+        },
+      });
+      await db.user.update({
+        where: { id: user?.id as string },
+        data: { emailVerified: new Date(), online: true },
+      });
+      // Log the successful sign-in
+      await db.loginLog.create({
+        data: {
+          userId: user?.id || "",
+          ipAddress: ip as string,
+          os: ua.os.name || "",
+          browser: ua.browser.name || "",
+          device: ua.device.type || "",
+          status: "success",
+          timestamp: new Date(now()),
+          userAgentDetails: JSON.stringify({
+            os: ua.os.name || "",
+            browser: ua.browser.name || "",
+            device: ua.device.type || "",
+          }),
+        },
+      });
+
+      // If the user is signing in with OAuth, check if email verification is required
+      // and if the user has verified their email.
+      // If the user is signing in with credentials, allow sign-in without email verification.
+      // Note: This is a security measure to prevent unauthorized access.
       //  Allow OAuth without email verification
       if (account?.provider !== "credentials") return true;
 
@@ -56,6 +105,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.isOAuth = token.isOAuth;
+        session.user.role = token.role;
       }
       return session;
     },

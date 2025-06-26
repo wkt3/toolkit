@@ -1,13 +1,32 @@
-// /app/superadmin/page.tsx
-import SuperAdminDashboard from "@/components/superadmin/SuperAdminDashboard";
-import {stats} from "../../api/files/usage/route"
+import { getAllUsersWithLogs } from "@/actionserver/superadmin";
+import { Card, CardContent } from "@/components/ui/card";
 
-export default function SuperAdminPage() {
+export default async function SuperadminPage() {
+  const users = await getAllUsersWithLogs();
+
   return (
-    <main className="p-6 max-w-7xl mx-auto">
-      <SuperAdminDashboard />
-      <p>Total Files: {stats._count._all}</p>
-      <p>Total Size: {((stats._sum.size ?? 0) / 1024 / 1024).toFixed(2)} MB</p>
-    </main>
+    <div className="p-4 space-y-4 mt-4">
+      <h1 className="text-3xl font-bold">Superadmin Dashboard</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {users.map((user) => (
+          <Card key={user.id}>
+            <CardContent>
+              <p>
+                <strong>{user.name}</strong> ({user.email})
+              </p>
+              <p>Online: {user.online ? "✅" : "❌"}</p>
+              <p>
+                Last login:{" "}
+                {user.loginLogs[0]?.loggedInAt?.toLocaleString() || "N/A"}
+              </p>
+              <p>IP: {user.loginLogs[0]?.ipAddress}</p>
+              <p>Browser: {user.loginLogs[0]?.browser}</p>
+              <p>Device:{ user.loginLogs[0]?.device}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 }

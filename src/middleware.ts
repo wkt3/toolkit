@@ -10,7 +10,7 @@ import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((req) => {
+export default auth(async (req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
@@ -18,6 +18,7 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
+  const isOnSuperAdmin = nextUrl.pathname.startsWith("/superadmin");
 
   if (isApiAuthRoute) {
     return NextResponse.next();
@@ -31,6 +32,13 @@ export default auth((req) => {
   }
 
   if (isOnDashboard) {
+    if (isLoggedIn) {
+      return NextResponse.next();
+    }
+    return Response.redirect(new URL("/signin", nextUrl));
+  }
+
+  if (isOnSuperAdmin && req.auth?.user?.role === "SUPERADMIN") {
     if (isLoggedIn) {
       return NextResponse.next();
     }
@@ -55,6 +63,6 @@ export const config = {
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
     "/users/:path*",
     "/dashboard/:path*",
-    "/superadmin/:path*"
+    "/superadmin/:path*",
   ],
 };
