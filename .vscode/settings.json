@@ -1,24 +1,3 @@
 {
-  "WillLuke.nextjs.addTypesOnSave": true,
-  "WillLuke.nextjs.hasPrompted": true,
-  "cSpell.words": [
-    "actionserver",
-    "Exsits",
-    "forgotpassword",
-    "googleusercontent",
-    "iconfont",
-    "listhome",
-    "pexels",
-    "recieve",
-    "RECIEVER",
-    "Simplelogin",
-    "sonner",
-    "Teamspeak",
-    "Toastify",
-    "veri"
-  ],
-  "workbench.colorCustomizations": {
-    "editor.lineHighlightBackground": "#1073cf2d",
-    "editor.lineHighlightBorder": "#9fced11f"
-  }
+  "WillLuke.nextjs.hasPrompted": true
 }

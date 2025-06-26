@@ -7,153 +7,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole{
+enum UserRole {
   ADMIN
   USER
+  SUPERADMIN
+  MANAGER
+  GUEST
+  INCHARGE
 }
 
-model User{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String?
-  email String? @unique
-  emailVerified DateTime?
-  image String?
-  password String?
-  newPassword String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role  UserRole @default(USER)
-  isTwoFactorEnabled Boolean @default(false)
+model User {
+  id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String?
+  email                 String?                @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  newPassword           String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  role                  UserRole               @default(USER)
+  isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
-  favouriteIds String[] @db.ObjectId
+  favouriteIds          String[]               @db.ObjectId
 
   accounts Account[]
-  sessions      Session[]
-  messages Message[] @relation("UserMessages")
-  online Boolean @default(false)
-  lastSeen DateTime @default(now())
-  chatRoomMembers ChatRoomMember[]
+  sessions Session[]
 }
 
-model File{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  url       String
-  filename  String
-  mimetype  String
-  size      Int
-  userId    String
-  width       Int?
-  height      Int?
-  tag         String?   // "profile", "banner", "gallery"
-  isPublic    Boolean   @default(true)
-  deleted     Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Image {
-  id          String   @id @default(uuid()) @map("_id") @db.ObjectId
-  userId      String?
-  url         String?
-  title       String?
-  description String?
-  color String?
-  colorCode String?
-  tags        String[]
-  createdAt   DateTime @default(now())
-  updatedAt  DateTime @default(now())
-}
-
-
-model Account{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String @db.ObjectId
-  type String
-  provider String
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
   providerAccountId String
-  refresh_token String? @db.String
-  access_token String? @db.String
-  expires_at Int?
-  token_type String?
-  scope String?
-  id_token String? @db.String
-  session_state String?
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
 
-  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
-  @@unique([provider,providerAccountId])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
-
-
-model Message{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-   content   String
-  createdAt DateTime @default(now())
-  senderId  String   @db.ObjectId
-   sender    User     @relation("UserMessages", fields: [senderId], references: [id])
-  roomId    String   @db.ObjectId
-  room      ChatRoom @relation("RoomMessages", fields: [roomId], references: [id])
- 
-}
-
-model ChatRoom {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  isGroup   Boolean    @default(false)
-  chatRoomMembers ChatRoomMember[]
-  messages  Message[] @relation("RoomMessages")
-  createdAt DateTime @default(now())
-}
-
-
-
-model VerificationToken{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  email String
-  token String @unique
-  expires DateTime
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  email      String
+  token      String   @unique
+  expires    DateTime
   identifier String?
 
-  @@unique([email,token])
+  @@unique([email, token])
   @@unique([identifier, token])
 }
 
-model PasswordResetToken{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  email String
-  token String @unique
+model PasswordResetToken {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String
+  token   String   @unique
   expires DateTime
 
-  @@unique([email,token])
+  @@unique([email, token])
 }
 
-model TwoFactorToken{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  email String
-  token String @unique
+model TwoFactorToken {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String
+  token   String   @unique
   expires DateTime
 
-  @@unique([email,token])
+  @@unique([email, token])
 }
 
-model TwoFactorConfirmation{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+model TwoFactorConfirmation {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
   userId String @db.ObjectId
-  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
-}
-
-
-
-
-type Address{
-  city String
-  country String
-  line1 String
-  line2 String?
-  postal_code String
-  state String
 }
 
 model Session {
@@ -162,18 +97,6 @@ model Session {
   userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
-
-model ChatRoomMember {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  chatRoomId String  @db.ObjectId
-
-  user      User     @relation(fields: [userId], references: [id])
-  chatRoom  ChatRoom @relation(fields: [chatRoomId], references: [id])
-
-  @@unique([userId, chatRoomId])
-}
-
