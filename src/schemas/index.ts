@@ -117,3 +117,7 @@ export const passwordSchema = z
     path: ["confirmNewPassword"],
     message: "Passwords do not match",
   });
+
+  export const makeManagerSchema = z.object({
+    email: z.string().email("Valid email required"),
+  });

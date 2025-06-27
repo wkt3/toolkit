@@ -1,9 +1,7 @@
-"use client"
+"use client";
 import React from "react";
-import { Button } from "../ui/button";
 import UserBtn from "../main/navbar/UserBtn";
-import { signOut } from "next-auth/react";
-
+import SignOutBtn from "@/app/(auth)/signout/page";
 
 const PNavbar = () => {
   return (
@@ -16,9 +14,7 @@ const PNavbar = () => {
         <UserBtn />
       </div>
       <div className="float-right">
-        <Button onClick={()=>signOut()} >
-          SignOut
-        </Button>
+        <SignOutBtn />
       </div>
     </div>
   );

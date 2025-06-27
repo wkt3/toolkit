@@ -10,7 +10,7 @@ const TimerPing = () => {
       });
   return (
       <div>
-          timer 
+        Welcome Dear Have  A great Game🏏🎉🥳🥳
     </div>
   )
 }

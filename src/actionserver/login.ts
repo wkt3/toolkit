@@ -101,7 +101,12 @@ export const login = async (values: z.infer<typeof authLoginSliceSchema>) => {
   } catch (error) {
     // Type guard to check if error has a 'code' property
     function hasCodeProperty(err: unknown): err is { code: string } {
-      return typeof err === "object" && err !== null && "code" in err && typeof (err as any).code === "string";
+      return (
+        typeof err === "object" &&
+        err !== null &&
+        "code" in err &&
+        typeof (err as { code?: unknown }).code === "string"
+      );
     }
 
     if (error instanceof AuthError && hasCodeProperty(error)) {

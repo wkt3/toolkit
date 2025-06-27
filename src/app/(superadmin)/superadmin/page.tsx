@@ -6,7 +6,7 @@ export default async function SuperadminPage() {
   const users = await getAllUsersWithLogs()
   return (
     <div className="p-4 space-y-4 mt-4">
-      <TimerPing/>
+      <TimerPing />
       <h1 className="text-2xl font-bold">Superadmin Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {users.map((user) => (
@@ -23,6 +23,11 @@ export default async function SuperadminPage() {
               <p>IP: {user.loginLogs[0]?.ipAddress}</p>
               <p>Browser: {user.loginLogs[0]?.browser}</p>
               <p>Device:{user.loginLogs[0]?.device}</p>
+              <p>Login Count: {user.loginCount}</p>
+              <p>
+                Total Online: {(Number(user.totalOnlineMs) / 60000).toFixed(1)}{" "}
+                minutes
+              </p>
             </CardContent>
           </Card>
         ))}

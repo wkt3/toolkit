@@ -76,8 +76,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         },
       });
       await db.user.update({
-        where: { id: user.id },
-        data: { online: true },
+        where: { email: user.email as string },
+        data: {
+          loginCount: { increment: 1 },
+          currentLogin: new Date(now()),
+          provider: account?.provider || "credentials",
+        },
       });
       return true;
     },
