@@ -8,6 +8,7 @@ import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import SuperadminLayout from "../(superadmin)/layout";
 import ManagerLayout from "../(managers)/layout";
+import UserLayout from "../(user)/layout";
 
 export default async function AuthLayout({
   children,
@@ -17,13 +18,19 @@ export default async function AuthLayout({
   const currentUser = await getCurrentUser();
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-  const session = await auth();
-  if (session?.user?.role === "SUPERADMIN") {
-    return <SuperadminLayout>{children}</SuperadminLayout>;
-  }
-  if (session?.user?.role === "ADMIN") {
-    return <ManagerLayout>{children}</ManagerLayout>;
-  }
+
+    const session = await auth();
+      if (session?.user?.role === "SUPERADMIN") {
+        return <SuperadminLayout>{children}</SuperadminLayout>;
+      }
+    
+      if (session?.user?.role === "ADMIN") {
+        return <ManagerLayout>{children}</ManagerLayout>;
+      }
+      if (session?.user?.role === "USER") {
+        return <UserLayout>{children}</UserLayout>;
+      }
+
   return (
     <SessionProvider>
       <div className="flex">

@@ -19,7 +19,7 @@ export default auth(async (req) => {
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
   const isOnSuperAdmin = nextUrl.pathname.startsWith("/superadmin");
-  const isOnManager= nextUrl.pathname.startsWith("/manager")
+  const isOnManager = nextUrl.pathname.startsWith("/manager");
 
   if (isApiAuthRoute) {
     return NextResponse.next();
@@ -45,12 +45,9 @@ export default auth(async (req) => {
     }
     return Response.redirect(new URL("/signin", nextUrl));
   }
- 
-  if (isOnManager && req?.auth?.user?.role === "MANAGER") {
-    if (isLoggedIn) {
-      return NextResponse.next();
-    }
-    return NextResponse.redirect(new URL("/signin",nextUrl))
+
+  if (isOnManager && req?.auth?.user?.role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/signin", nextUrl));
   }
 
   if (!isLoggedIn && !isPublicRoute) {

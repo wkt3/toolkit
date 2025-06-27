@@ -74,7 +74,6 @@ model Manager {
   canViewLogs      Boolean  @default(false)
   canSendPromos    Boolean  @default(false)
   canManageQueries Boolean  @default(false)
-
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
